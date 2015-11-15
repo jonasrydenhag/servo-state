@@ -15,7 +15,7 @@ try:
 		if (GPIO.input(11) == 1):
 			if (activated == 0):
 				activated = 1
-				subprocess.call(["python", "bin/servo.py"])
+				subprocess.call(["python", "/home/pi/bin/servo.py"])
 				time.sleep(1)
 		else:
 			activated = 0
