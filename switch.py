@@ -1,5 +1,6 @@
-import RPi.GPIO as GPIO
 import time
+import RPi.GPIO as GPIO
+import subprocess
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -12,8 +13,8 @@ try:
 		if (GPIO.input(11) == 1):
 			if (activated == 0):
 				activated = 1
-				print("true")
-				time.sleep(2)
+				subprocess.call(["python", "bin/servo.py"])
+				time.sleep(1)
 		else:
 			activated = 0
 				
