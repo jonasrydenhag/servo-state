@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 
 import Adafruit_DHT as dht
 
