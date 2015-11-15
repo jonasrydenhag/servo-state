@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/python
+
 import pymongo
 import RPi.GPIO as GPIO
 import time
