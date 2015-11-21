@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/python
+
 import RPi.GPIO as GPIO
-import Adafruit_DHT as dht
+import temp
 import max7219.led as led
 
 import time
@@ -26,7 +27,7 @@ try:
 		if GPIO.input(PIR_PIN) and not tempMeasuring:
 			tempMeasuring = True
 
-			h,t = dht.read_retry(dht.DHT22, 19)
+			h,t = temp.read()
 
 			orgValue = round(t,2)
 			orgDecValue = orgValue/10
