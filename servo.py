@@ -6,6 +6,7 @@ import time
 import datetime
 import sys
 from pymongo import MongoClient
+import singleLed
 
 pinNr = 37
 
@@ -40,3 +41,6 @@ for switch in switches.find().limit(1).sort("date", -1):
 		sys.exit()
 
 switches.insert_one(newSwitch)
+
+if newSwitch['state'] == 'on':
+	singleLed.run()
