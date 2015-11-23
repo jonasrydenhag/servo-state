@@ -27,7 +27,7 @@ try:
 		if GPIO.input(PIR_PIN) and not tempMeasuring:
 			tempMeasuring = True
 
-			h,t = temp.read()
+			h,t,date = temp.read()
 
 			orgValue = round(t,2)
 			orgDecValue = orgValue/10

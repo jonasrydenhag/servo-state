@@ -22,16 +22,18 @@ def read():
 
 	h,t = dht.read_retry(dht.DHT22, 19)
 
+	date = datetime.datetime.utcnow()
+
 	readings.insert_one({
-		"date": datetime.datetime.utcnow(),
+		"date": date,
 		"temperature": t,
 		"humidity" : h
 	})
 
 	reading = 0
 
-	return (h, t)
+	return (h, t, date)
 
 if len(sys.argv) > 1 and sys.argv[1] == "read":
-	h,t = read()
-	print '{0:0.1f},{1:0.1f}'.format(h,t)
+	h,t,date = read()
+	print '{0},{1},{2}'.format(h,t,date)
