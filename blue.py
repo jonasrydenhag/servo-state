@@ -19,7 +19,7 @@ def connect():
 	global connectProblemNr
 	global keepAlive
 
-	if (connectProblemNr > 1):
+	if (connectProblemNr > 10):
 		print "too many problems"
 		keepAlive = 0
 		return
@@ -37,7 +37,8 @@ def connect():
 	outs, errs = proc.communicate()
 	print "-comm-e"
 
-	if (errs == "Can't connect RFCOMM socket: Host is down\n"):
+	if (errs == "Can't connect RFCOMM socket: Host is down\n" or
+			errs == "Can't connect RFCOMM socket: Device or resource busy\n"):
 		connectProblemNr += 1
 		print "we have a problem"
 		time.sleep(2)

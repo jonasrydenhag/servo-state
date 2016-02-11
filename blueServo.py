@@ -1,12 +1,30 @@
 #!/usr/bin/python
 
 import subprocess
+import time
 
 rfcomm = "rfcomm1"
 pushCmd = "push"
 
-cmd = "echo '%s' > /dev/%s" % (pushCmd, rfcomm)
-proc = subprocess.call(cmd, shell=True)
+connectProblemNr = 0
 
-import setState
-setState.changeState()
+def push():
+	global connectProblemNr
+
+	cmd = "echo '%s' > /dev/%s" % (pushCmd, rfcomm)
+	proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	outs, errs = proc.communicate()
+	errorMsg = '/bin/sh: 1: cannot create /dev/%s: No such device or address\n' % rfcomm
+
+	if (errs != errorMsg):
+		import setState
+		setState.changeState()
+	else:
+		if (connectProblemNr < 5):
+			connectProblemNr += 1
+			subprocess.call("python /home/pi/bin/blue.py &", shell=True)
+			time.sleep(5)
+			push()
+
+push()
