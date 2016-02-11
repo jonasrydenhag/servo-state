@@ -1,43 +1,30 @@
 #!/usr/bin/python
 
-import bluetooth
-import time
+def changeState():
+	import datetime
 
-import pymongo
-from pymongo import MongoClient
-import datetime
-import sys
-import singleLed
+	newSwitch = {
+		"date": datetime.datetime.utcnow()
+	}
 
-bd_addr = "00:06:66:7A:D1:05"
+	import sys
+	import pymongo
+	from pymongo import MongoClient
 
-port = 1
+	client = MongoClient('localhost', 27017)
+	db = client['temperature-station']
+	switches = db.switches
 
-sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-sock.connect((bd_addr, port))
+	for switch in switches.find().limit(1).sort("date", -1):
+		if switch['state'] == 'on':
+			newSwitch['state'] = 'off'
+		elif switch['state'] == 'off':
+			newSwitch['state'] = 'on'
+		else:
+			sys.exit()
 
-sock.send("push")
+	switches.insert_one(newSwitch)
 
-time.sleep(2)
-sock.close()
-
-client = MongoClient('localhost', 27017)
-db = client['temperature-station']
-switches = db.switches
-
-newSwitch = {
- 	"date": datetime.datetime.utcnow()
-}
-
-for switch in switches.find().limit(1).sort("date", -1):
-	if switch['state'] == 'on':
-		newSwitch['state'] = 'off'
-	elif switch['state'] == 'off':
-		newSwitch['state'] = 'on'
-	else:
-		sys.exit()
-
-switches.insert_one(newSwitch)
-
-if newSwitch['state'] == 'on':
-	singleLed.run()
+	if newSwitch['state'] == 'on':
+		import singleLed
+		singleLed.run()

@@ -5,7 +5,8 @@ import time
 import subprocess
 import sys
 
-bd_addr = "00:06:66:7A:D1:05"
+rfcomm = "rfcomm1"
+bdAddr = "00:06:66:7A:D1:05"
 channel = 1
 
 proc = None
@@ -23,7 +24,7 @@ def connect():
 		keepAlive = 0
 		return
 
-	cmd = "rfcomm connect /dev/rfcomm1 %s %s" % (bd_addr, channel)
+	cmd = "rfcomm connect /dev/%s %s %s" % (rfcomm, bdAddr, channel)
 
 	proc = subprocess.Popen(
 		cmd,
