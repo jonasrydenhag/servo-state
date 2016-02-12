@@ -1,6 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-import bluetooth
 import time
 import subprocess
 import sys
@@ -20,7 +19,7 @@ def connect():
 	global keepAlive
 
 	if (connectProblemNr > 10):
-		print "too many problems"
+		print("too many problems")
 		keepAlive = 0
 		return
 
@@ -33,14 +32,14 @@ def connect():
 		stderr=subprocess.PIPE
 	)
 
-	print "-comm-s"
+	print("-comm-s")
 	outs, errs = proc.communicate()
-	print "-comm-e"
+	print("-comm-e")
 
-	if (errs == "Can't connect RFCOMM socket: Host is down\n" or
-			errs == "Can't connect RFCOMM socket: Device or resource busy\n"):
+	if (errs == b"Can't connect RFCOMM socket: Host is down\n" or
+			errs == b"Can't connect RFCOMM socket: Device or resource busy\n"):
 		connectProblemNr += 1
-		print "we have a problem"
+		print("we have a problem")
 		time.sleep(2)
 		connect()
 	else:
@@ -51,19 +50,19 @@ try:
 
 	while keepAlive:
 		time.sleep(1)
-		print "-poll-s"
-		print proc.poll()
-		print "-poll-e"
+		print("-poll-s")
+		print(proc.poll())
+		print("-poll-e")
 		if (proc.poll() == 0):
-			print "gone reconnect"
+			print("gone reconnect")
 			connect()
 
 except KeyboardInterrupt:
-	print "Quit"
+	print("Quit")
 except:
-	print "Unexpected error:", sys.exc_info()[0]
+	print("Unexpected error:", sys.exc_info()[0])
 finally:
 	if (proc.poll() != 0):
 		proc.kill()
 
-print "done"
+print("done")

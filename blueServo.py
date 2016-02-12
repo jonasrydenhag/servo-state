@@ -23,7 +23,7 @@ def push():
 	else:
 		if (connectProblemNr < 5):
 			connectProblemNr += 1
-			subprocess.call("python /home/pi/bin/blue.py &", shell=True)
+			subprocess.call("python3 /home/pi/bin/blue.py &", shell=True)
 			time.sleep(5)
 			push()
 
