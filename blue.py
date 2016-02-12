@@ -32,9 +32,7 @@ def connect():
 		stderr=subprocess.PIPE
 	)
 
-	print("-comm-s")
 	outs, errs = proc.communicate()
-	print("-comm-e")
 
 	if (errs == b"Can't connect RFCOMM socket: Host is down\n" or
 			errs == b"Can't connect RFCOMM socket: Device or resource busy\n"):
@@ -50,11 +48,8 @@ try:
 
 	while keepAlive:
 		time.sleep(1)
-		print("-poll-s")
-		print(proc.poll())
-		print("-poll-e")
 		if (proc.poll() == 0):
-			print("gone reconnect")
+			print("gone. reconnect.")
 			connect()
 
 except KeyboardInterrupt:
