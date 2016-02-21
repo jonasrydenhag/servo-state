@@ -19,6 +19,7 @@ def read():
 
 	if reading == 1:
 		time.sleep(3)
+	reading = 1
 
 	h,t = dht.read_retry(dht.DHT22, 19)
 
