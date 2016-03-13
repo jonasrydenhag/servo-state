@@ -35,7 +35,8 @@ def connect():
 	outs, errs = proc.communicate()
 
 	if (errs == b"Can't connect RFCOMM socket: Host is down\n" or
-			errs == b"Can't connect RFCOMM socket: Device or resource busy\n"):
+			errs == b"Can't connect RFCOMM socket: Device or resource busy\n" or
+			errs == b"Can't connect RFCOMM socket: No route to host\n"):
 		connectProblemNr += 1
 		print("we have a problem")
 		time.sleep(2)
