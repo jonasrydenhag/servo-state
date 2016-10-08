@@ -19,6 +19,8 @@ try:
 				time.sleep(1)
 		else:
 			activated = 0
+
+		time.sleep(0.01)
 				
 except KeyboardInterrupt:
 	GPIO.cleanup()
