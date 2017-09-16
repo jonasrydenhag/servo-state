@@ -15,13 +15,17 @@ function off () {
   return changeState("off");
 }
 
+function currentState () {
+  return storage.state();
+}
+
 function changeState (state) {
   return new Promise(function (resolve, reject) {
     if (state !== "on" && state !== "off") {
       throw new Error("Invalid state: " + state);
     }
 
-    storage.state()
+    currentState()
       .then(function (currentState) {
         if (state === currentState) {
           resolve(state);
@@ -46,6 +50,7 @@ function changeState (state) {
 (function(){
   module.exports.on = on;
   module.exports.off = off;
+  module.exports.state = currentState;
 
   if (module.parent === null) {
     var state = process.argv[2];
