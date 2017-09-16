@@ -1,30 +1,65 @@
-#!/usr/bin/python
+#!/usr/bin/env node
 
-def changeState():
-	import datetime
+'use strict';
 
-	newSwitch = {
-		"date": datetime.datetime.utcnow()
-	}
+var debug = require('debug')('servoState');
+var Promise = require('promise');
+var servo = require('../blueServo');
+var storage = require('./lib/storage');
 
-	import sys
-	import pymongo
-	from pymongo import MongoClient
+function on () {
+  return changeState("on");
+}
 
-	client = MongoClient('localhost', 27017)
-	db = client['temperature-station']
-	switches = db.switches
+function off () {
+  return changeState("off");
+}
 
-	for switch in switches.find().limit(1).sort("date", -1):
-		if switch['state'] == 'on':
-			newSwitch['state'] = 'off'
-		elif switch['state'] == 'off':
-			newSwitch['state'] = 'on'
-		else:
-			sys.exit()
+function changeState (state) {
+  return new Promise(function (resolve, reject) {
+    if (state !== "on" && state !== "off") {
+      throw new Error("Invalid state: " + state);
+    }
 
-	switches.insert_one(newSwitch)
+    storage.state()
+      .then(function (currentState) {
+        if (state === currentState) {
+          resolve(state);
+        } else {
+          servo.press()
+            .then(function () {
+              storage.push(state);
 
-	if newSwitch['state'] == 'on':
-		import singleLed
-		singleLed.run()
+              resolve(state);
+            })
+            .catch(function (ex) {
+              reject(ex);
+            });
+        }
+      })
+      .catch(function (ex) {
+        reject(ex);
+      });
+  });
+}
+
+(function(){
+  module.exports.on = on;
+  module.exports.off = off;
+
+  if (module.parent === null) {
+    var state = process.argv[2];
+
+    changeState(state)
+      .then(function (newState) {
+        debug(newState);
+        console.log(newState);
+
+        process.exit();
+      })
+      .catch(function (ex) {
+        debug(ex);
+        process.exit(1);
+      });
+  }
+})();
