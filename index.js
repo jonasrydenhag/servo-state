@@ -21,7 +21,7 @@ function currentState () {
 
 function changeState (state) {
   return new Promise(function (resolve, reject) {
-    if (state !== "on" && state !== "off") {
+    if (state !== undefined && state !== "on" && state !== "off") {
       throw new Error("Invalid state: " + state);
     }
 
@@ -30,6 +30,10 @@ function changeState (state) {
         if (state === currentState) {
           resolve(state);
         } else {
+          if (state === undefined) {
+            state = currentState === "on" ? "off" : "on"
+          }
+
           servo.press()
             .then(function () {
               storage.push(state);
@@ -48,6 +52,7 @@ function changeState (state) {
 }
 
 (function(){
+  module.exports.change = changeState;
   module.exports.on = on;
   module.exports.off = off;
   module.exports.state = currentState;
