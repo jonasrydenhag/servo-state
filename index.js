@@ -9,17 +9,11 @@ var servo = require('../blueServo');
 var storage = require('./lib/storage');
 
 function on () {
-  return changeState("on")
-    .then(function () {
-      led.on();
-    });
+  return changeState("on");
 }
 
 function off () {
-  return changeState("off")
-    .then(function () {
-      led.off();
-    });
+  return changeState("off");
 }
 
 function currentState () {
@@ -46,6 +40,12 @@ function changeState (state) {
               storage.push(state);
 
               resolve(state);
+
+              if (state === "on") {
+                led.on();
+              } else {
+                led.off();
+              }
             })
             .catch(function (ex) {
               reject(ex);
