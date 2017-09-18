@@ -3,16 +3,23 @@
 'use strict';
 
 var debug = require('debug')('servoState');
+var led = require('../led');
 var Promise = require('promise');
 var servo = require('../blueServo');
 var storage = require('./lib/storage');
 
 function on () {
-  return changeState("on");
+  return changeState("on")
+    .then(function () {
+      led.on();
+    });
 }
 
 function off () {
-  return changeState("off");
+  return changeState("off")
+    .then(function () {
+      led.off();
+    });
 }
 
 function currentState () {
@@ -63,8 +70,6 @@ function changeState (state) {
     changeState(state)
       .then(function (newState) {
         debug(newState);
-        console.log(newState);
-
         process.exit();
       })
       .catch(function (ex) {
